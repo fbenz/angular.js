@@ -1,0 +1,83 @@
+*** jqLite_original.js_	2014-01-17 14:19:48.533783000 +0100
+--- jqLite.js	2014-01-17 14:24:57.845795820 +0100
+***************
+*** 299,328 ****
+  }
+  
+  function jqLiteRemoveClass(element, cssClasses) {
+!   if (cssClasses && element.setAttribute) {
+!     forEach(cssClasses.split(' '), function(cssClass) {
+!       element.setAttribute('class', trim(
+!           (" " + (element.getAttribute('class') || '') + " ")
+!           .replace(/[\n\t]/g, " ")
+!           .replace(" " + trim(cssClass) + " ", " "))
+!       );
+!     });
+    }
+  }
+  
+  function jqLiteAddClass(element, cssClasses) {
+!   if (cssClasses && element.setAttribute) {
+!     var existingClasses = (' ' + (element.getAttribute('class') || '') + ' ')
+!                             .replace(/[\n\t]/g, " ");
+  
+!     forEach(cssClasses.split(' '), function(cssClass) {
+!       cssClass = trim(cssClass);
+!       if (existingClasses.indexOf(' ' + cssClass + ' ') === -1) {
+!         existingClasses += cssClass + ' ';
+!       }
+!     });
+  
+!     element.setAttribute('class', trim(existingClasses));
+    }
+  }
+  
+--- 299,346 ----
+  }
+  
+  function jqLiteRemoveClass(element, cssClasses) {
+!   if (cssClasses) {
+!     if (msie && msie < 8) {
+!       forEach(cssClasses.split(' '), function(cssClass) {
+!         element.className = trim(
+!             (" " + element.className + " ")
+!             .replace(/[\n\t]/g, " ")
+!             .replace(" " + trim(cssClass) + " ", " ")
+!         );
+!       });
+!     } else {
+!       forEach(cssClasses.split(' '), function(cssClass) {
+!         element.setAttribute('class', trim(
+!             (" " + (element.getAttribute('class') || '') + " ")
+!             .replace(/[\n\t]/g, " ")
+!             .replace(" " + trim(cssClass) + " ", " "))
+!         );
+!       });
+!     }
+    }
+  }
+  
+  function jqLiteAddClass(element, cssClasses) {
+!   if (cssClasses) {
+!     if (msie && msie < 8) {
+!       forEach(cssClasses.split(' '), function(cssClass) {
+!         if (!jqLiteHasClass(element, cssClass)) {
+!           element.className = trim(element.className + ' ' + trim(cssClass));
+!         }
+!       });
+!     } else {
+!       var existingClasses = (' ' + (element.getAttribute('class') || '') + ' ')
+!                               .replace(/[\n\t]/g, " ");
+  
+!       forEach(cssClasses.split(' '), function(cssClass) {
+!         cssClass = trim(cssClass);
+!         if (existingClasses.indexOf(' ' + cssClass + ' ') === -1) {
+!           existingClasses += cssClass + ' ';
+!         }
+!       });
+  
+!       element.setAttribute('class', trim(existingClasses));
+!     }
+    }
+  }
+  
